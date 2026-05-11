@@ -130,6 +130,26 @@ No `tests/` directory at the module root by Go convention.
   from the binary — improves reproducibility and avoids leaking
   build-host paths.
 
+### `scripts/` directory convention
+
+If the smoke or live-validation step is more than a single
+shell command, factor it into a script under `scripts/` at the
+component repo root and call the script from the operations
+table above. The convention:
+
+- `scripts/smoke.sh` — pre-commit smoke, if it doesn't fit on
+  one line.
+- `scripts/smoke-baseline.sh` — live-regression smoke against a
+  real staging environment.
+- `scripts/<other>.sh` — repeatable operational tasks (release
+  cut, dependency-license report regeneration, etc.).
+
+All scripts are POSIX-compatible bash, executable bit set,
+documented with a header comment block stating the script's
+purpose and exit-code semantics. The `pre-commit smoke` row in
+the operations table then reads `scripts/smoke.sh` instead of
+the inline chain.
+
 ## Error-handling idiom
 
 - **Public surface:** functions return `(T, error)`. The caller
