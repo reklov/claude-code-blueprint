@@ -68,7 +68,6 @@ Jede neue Komponente startet mit identischem Skelett. Wer Komponente A kennt, ka
 ├── PLAN.md                            # Schlanke Status-Tabelle
 ├── README.md                          # Public-facing entry
 ├── FINDINGS.md                        # Index-Tabelle aller Findings (Status, Verweis)
-├── BOOTSTRAP.md                       # Wird beim Bootstrap entfernt
 ├── docs/
 │   ├── HANDOFF.md                     # Session-Übergabe (max. 150 Zeilen, rewrite-not-append)
 │   ├── architecture.md                # Komponenten-Architektur, Diagramme, Datenflüsse
@@ -467,14 +466,6 @@ Findings sind keine Architektur-Entscheidungen. Wenn aus einem Finding eine Ents
 
 ---
 
-### §4.10 `BOOTSTRAP.md` (Repo-Root, transient)
-
-**Zweck:** Anleitung für den Bootstrap-Prozess. **Wird nach erfolgreichem Bootstrap entfernt** (siehe §7).
-
-Inhalt: siehe §7.
-
----
-
 ## §5 Language-Pack Interface
 
 Ein Language-Pack ist ein Markdown-Dokument (`docs/_language-pack-{{language-pack}}.md` im Komponenten-Repo, oder zentral im Blueprint-Repo gepflegt und beim Bootstrap kopiert), das die folgenden Sektionen liefert. **Diese Sektionen sind das Interface — fehlt eine, ist das Pack unvollständig.**
@@ -575,30 +566,77 @@ Wenn alle vier zutreffen: separate Komponenten, separate Repos. Die Kopplungs-Sc
 
 ## §7 Bootstrap Process
 
-Beim Erstellen eines neuen Komponenten-Repos:
+Der Bootstrap ist **Claude-Code-driven**. Der Blueprint-Repo enthält am Top-Level eine `CLAUDE.md` im "Bootstrap-Modus", die Claude beim ersten Start liest und als Anweisung ausführt. Es gibt keinen separaten Bootstrap-Befehl, kein Init-Skript und keine manuelle Checkliste — der Bootstrap-Pfad ist die Architektur selbst.
 
-1. **Klone das Blueprint-Repo** (oder nutze ein Init-Script aus dem Blueprint-Repo).
-2. **Beantworte die Bootstrap-Fragen:**
+### §7.1 Was der User tut
+
+```bash
+git clone <blueprint-remote>/claude-code-blueprint <your-component>
+cd <your-component>
+claude
+```
+
+Falls Claude beim Start nicht von selbst in den Bootstrap-Modus geht, prompt explicit: *"Read CLAUDE.md and start the bootstrap."*
+
+### §7.2 Was Claude im Bootstrap-Modus tut
+
+Schritt für Schritt:
+
+1. **Sprach-Auswahl.** Erste Frage in Englisch: in welcher Sprache soll die Bootstrap-Konversation laufen? Antwort des Users bestimmt die Chat-Sprache. **Committed content bleibt Englisch** per Hard Rule — nur das Prompt-Gespräch wechselt.
+
+2. **Bootstrap-Fragen** in der gewählten Chat-Sprache:
    - `COMPONENT-NAME` (kebab-case, z.B. `civicseal-attestation`)
    - `COMPONENT-TITLE` (lesbar, z.B. "CivicSeal Attestation Service")
    - `OWNER` (Person oder Team)
-   - `LANGUAGE-PACK` (`rust` | `go` | `typescript` | `kotlin`) — bei polyglotten Komponenten als zwei separate Antworten: `PRIMARY-LANGUAGE-PACK` plus eine Liste `SECONDARY-LANGUAGE-PACK[]` (siehe §6.3)
-   - `LICENSE` (SPDX-Identifier, z.B. `Apache-2.0`)
+   - `LANGUAGE-PACK` (`rust` | `go` | ...) — bei polyglotten Komponenten zwei separate Antworten: `PRIMARY-LANGUAGE-PACK` plus eine Liste `SECONDARY-LANGUAGE-PACK[]` (siehe §6.3)
+   - `LICENSE` (SPDX-Identifier, z.B. `Apache-2.0`; oder `LicenseRef-…` für interne Lizenzen)
    - `INITIAL-GENESIS-DECISION` (Kurztitel des ersten ADR — typischerweise die Sprach-/Architektur-Wahl selbst, bei polyglotten Komponenten zusätzlich die Multi-Language-Begründung gemäß §6)
    - `FIRST-STEP-TITLE` (Titel von Step 001)
-3. **Das Bootstrap-Tool/-Skript:**
-   - Ersetzt alle `{{...}}`-Placeholder.
-   - Kopiert das/die gewählten Language-Pack-Doc(s) nach `docs/_language-pack-{{language-pack}}.md`.
-   - Setzt den Verweis in `CLAUDE.md` §"Build, test, smoke" auf das/die Pack-Doc(s).
-   - Schreibt einen ersten ADR `001-{{genesis-decision-slug}}.md` aus Boilerplate (Status: Proposed; Decider: OWNER; mindestens das Sprachpack-Argument als Decision).
-   - Schreibt eine erste Step-Datei `docs/plan/001-{{first-step-slug}}.md` mit leerer aber strukturell vollständiger TDD-Liste.
-   - Initialisiert PLAN.md-Statustabelle mit Step 001 als `pending`.
-   - Initialisiert HANDOFF.md mit "Component bootstrapped, no work merged yet, first task is Step 001".
-   - Initialisiert FINDINGS.md mit leerer Tabelle und `docs/findings/README.md`.
-   - **Entfernt BOOTSTRAP.md.**
-4. **Initialer Commit** auf `main`: `chore: bootstrap component from blueprint`.
 
-Wenn kein Bootstrap-Tool verfügbar ist, ist der Prozess auch händisch durchführbar — `BOOTSTRAP.md` enthält genau diese Schritte als Checkliste.
+   Aus `INITIAL-GENESIS-DECISION` und `FIRST-STEP-TITLE` leitet Claude jeweils einen kebab-case-Slug ab und bestätigt mit dem User.
+
+3. **Spec lesen.** Claude liest `BLUEPRINT-SPEC.md` §3 + §7 + die Sektions-Schemata aller berührten Files (§4.x). Bei Konflikt zwischen den Anweisungen in der Top-Level `CLAUDE.md` und dem Spec gewinnt der Spec — Diskrepanz wird dem User gemeldet.
+
+4. **Plan vorstellen.** Bevor irgendetwas verändert wird, präsentiert Claude:
+   - Mustache-Substitutionen (Tabelle: `{{...}}` → konkrete Werte). Angle-Bracket-Pattern `<...>` bleiben unverändert per §3.
+   - Datei-Renames der Seed-Files (`001-{{first-step-slug}}.md`, `001-{{genesis-decision-slug}}.md`).
+   - Datei-Move des gewählten Language-Packs (`language-packs/<pack>.md` → `core/docs/_language-pack-<pack>.md`).
+   - Datei-Löschungen der blueprint-only Artefakte: `BLUEPRINT-SPEC.md`, `OPEN-QUESTIONS.md`, `language-packs/` (Verzeichnis), `core/` (nach Promote zum Root), Top-Level `README.md`, Top-Level `CLAUDE.md` (dieses File selbst).
+   - Git-Operationen: `rm -rf .git/` (Blueprint-History wegwerfen), `git init -b main`, `git add . && git commit -m "chore: bootstrap component from blueprint"`.
+
+   Claude wartet auf explizite Bestätigung des Users. Änderungswünsche werden eingearbeitet, dann erneut bestätigt.
+
+5. **Ausführen.** Nach Bestätigung führt Claude die Operationen aus:
+   - Replace aller `{{...}}` Mustaches via literal-string-Substitution. `<...>` Pattern bleiben unangetastet.
+   - Rename der zwei Seed-Files; Cross-References (PLAN.md status-Zeile, Links innerhalb der Seed-Files) werden im selben Pass aktualisiert.
+   - Copy des gewählten Language-Packs nach `core/docs/_language-pack-<pack>.md`.
+   - Promote `core/*` zum Repo-Root.
+   - Löschung der blueprint-only Artefakte.
+   - Drop des `.git/` Verzeichnisses (war vom Blueprint-Clone).
+   - `git init -b main`.
+   - First commit: `chore: bootstrap component from blueprint`.
+
+   Am Ende läuft eine Verifikation (alle Mandatory-Files vorhanden, drei-stellige Numerierung, keine unsubstituierten `{{...}}` außer den literal-`{{…}}`-Beispiel-Strings in `_template.md` HTML-Kommentaren).
+
+6. **Handoff.** Claude teilt dem User mit: Bootstrap fertig, **Claude Code bitte neustarten**, damit die echte component-`CLAUDE.md` (vormals `core/CLAUDE.md`) bei der nächsten Session als Anweisungs-Quelle gelesen wird. Erste echte Aufgabe: `docs/HANDOFF.md` + `docs/plan/001-<first-step-slug>.md`.
+
+### §7.3 Failure recovery
+
+Wenn der Bootstrap mittendrin scheitert (Claude-Crash, User-Abbruch, eine destruktive Operation überrascht den User), ist der Reset:
+
+```bash
+cd ..
+rm -rf <your-component>
+git clone <blueprint-remote>/claude-code-blueprint <your-component>
+cd <your-component>
+claude
+```
+
+Der Blueprint-Remote ist unverändert; nur das partielle Komponenten-Verzeichnis wird verworfen. Idempotente Re-Runs sind explizit *nicht* Ziel — der Reset-Pfad ist günstiger zu warten.
+
+### §7.4 Manueller Fallback
+
+**Es gibt keinen.** Wenn Claude Code nicht verfügbar ist, macht ein Claude-Code-Projekt ohnehin keinen Sinn — die ganze Architektur (TDD-Liste als Vertrag, Konventionen für KI-Lesbarkeit, Step-Files als kanonischer Plan) ist auf Claude-Code-Nutzung ausgelegt.
 
 ---
 
@@ -660,9 +698,7 @@ Sodium selbst muss sich rückwirkend als Instanz dieses Blueprints lesen lassen.
 
 ## §10 Open Questions
 
-Vor Phase 2 noch zu klären:
-
-1. **Bootstrap-Tool oder reine Markdown-Anleitung?** Ein kleines Script (Shell, Go, oder Rust-Binary) macht den Bootstrap reproduzierbar, kostet aber Pflege. Initial reicht vermutlich die Markdown-Anleitung.
+1. ~~**Bootstrap-Tool oder reine Markdown-Anleitung?**~~ **Resolved (v2, 2026-05-11):** Weder noch — der Bootstrap ist Claude-Code-driven via Top-Level `CLAUDE.md` im Blueprint-Repo. Siehe §7.
 2. **Master-Repo für die Language-Packs**, oder Pack-Doc beim Bootstrap reinkopieren und ab dann komponenten-lokal pflegen? Erstes ist konsistenter, zweites ist robuster gegen Pack-Bugs.
 3. **README.md-Konventionen** — soll es im Blueprint ein README-Template geben oder bleibt das frei? Tendenz: leichtes Template (Sektionen: What is this / Quick start / Documentation map / License), keine harten Vorgaben.
 4. **CI-Konfiguration** im Blueprint? Wenn ja, welcher CI-Anbieter ist Default bei Schwarz Digits? (GitHub Actions / GitLab CI / etwas Internes?)
@@ -692,3 +728,9 @@ Vor Phase 2 noch zu klären:
   - §7 Bootstrap-Fragen-Liste um `LICENSE` (SPDX-Identifier) ergänzt.
   - §6.3: `{{primary}}` / `{{secondary}}` umbenannt zu `{{primary-language-pack}}` / `{{secondary-language-pack}}` (kanonische, eindeutige Namen). §7 nennt die beiden Polyglot-Antworten separat als `PRIMARY-LANGUAGE-PACK` und `SECONDARY-LANGUAGE-PACK[]`.
 - 2026-05-11: Draft v3 — siebte Pflicht-Hard-Rule "Tidyings stay separate from behavioural changes" in §4.1 ergänzt. Quelle: Kent Beck, *Tidy First?*. Slot zwischen "Documentation update happens in the same commit" und "Accepted ADRs are not edited" — passt thematisch (beide Nachbarn betreffen Commit-Struktur bzw. Commit-Lifecycle). Mandatory-Cap bei 10 nicht überschritten (7/10 belegt).
+- 2026-05-11: Draft v4 — Bootstrap-Pivot zu Claude-Code-driven Flow:
+  - §3 Directory Layout: `BOOTSTRAP.md` aus dem Component-Root-Layout entfernt. Der Bootstrap-Pfad ist jetzt blueprint-intern.
+  - §4.10 (BOOTSTRAP.md transient): entfernt. Die ganze Sektion entfällt, weil es im Component-Repo kein BOOTSTRAP.md mehr gibt.
+  - §7 Bootstrap Process: komplett umgeschrieben für Claude-Code-driven Flow. Der Bootstrap erfolgt durch Claude im interaktiven Dialog (Sprach-Auswahl Englisch → gewählte Sprache → 7 Bootstrap-Fragen → Plan → Ausführung → Restart-Anweisung). Strukturiert in §7.1 (User-Aktion), §7.2 (Claude-Workflow), §7.3 (Failure recovery: nuke-and-re-clone, keine idempotenten Re-Runs), §7.4 (kein manueller Fallback — wenn Claude nicht verfügbar, macht ein Claude-Code-Projekt ohnehin keinen Sinn).
+  - §10 OQ-1 (Bootstrap-Tool vs. Markdown-Anleitung): als resolved markiert.
+  - Im Blueprint-Repo: Top-Level `CLAUDE.md` (Bootstrap-Modus-Prompt) angelegt, `core/BOOTSTRAP.md` (manuelle Checkliste) gelöscht, Top-Level `README.md` auf Claude-driven Quickstart verkürzt.
