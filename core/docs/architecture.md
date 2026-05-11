@@ -44,10 +44,23 @@
 
 ## External interfaces
 
-<!-- Which external systems this component talks to and how (HTTP,
-     gRPC, message queue, filesystem). Refer to docs/api.md for
-     the public surface this component exposes; refer here for
-     external systems it consumes. -->
+<!--
+  Which external systems this component talks to and how (HTTP,
+  gRPC, message queue, filesystem). Refer to docs/api.md for
+  the public surface this component exposes; refer here for
+  external systems it consumes.
+
+  **When to factor out into a dedicated doc.** Keep the entry
+  here short — one line per external system, naming the
+  interface and the rationale. If the description of a single
+  external integration grows past roughly half a screen (live-
+  discovered behaviour, deviations from the published spec,
+  workarounds, version notes), factor it out into a dedicated
+  `docs/external-<system>.md` file (see BLUEPRINT-SPEC.md §4.7).
+  Link to it from the bullet here. Examples:
+    docs/external-stripe.md   — payment-provider quirks
+    docs/external-wire-api.md — third-party API deviations
+-->
 - <external-system-1> — <interface-and-rationale>
 
 ## Constraints
