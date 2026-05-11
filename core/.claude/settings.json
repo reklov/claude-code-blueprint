@@ -1,0 +1,16 @@
+{
+  "_comment_": "Component-wide Claude Code settings, governed by BLUEPRINT-SPEC.md §4.9. Checked in. Per-user overrides go in .claude/settings.local.json (gitignored). Replace the empty allow/deny lists with the component's standing tool whitelist; the placeholders below are starting points, not prescriptions.",
+
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)"
+    ],
+    "defaultMode": "default"
+  }
+}

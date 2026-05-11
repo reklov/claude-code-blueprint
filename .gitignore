@@ -1,0 +1,10 @@
+# Claude Code local user-specific settings
+.claude/settings.local.json
+
+# OS / editor cruft (component teams may extend this list)
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/

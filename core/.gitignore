@@ -1,0 +1,12 @@
+# Skeleton .gitignore — extend per language-pack.
+# Spec §4.9 mandates the .claude/settings.local.json line.
+.claude/settings.local.json
+
+# OS / editor noise.
+.DS_Store
+.idea/
+.vscode/
+
+# Add language-specific build artifacts here (e.g. /target for
+# Rust, node_modules/ for TypeScript, build/ for Gradle, bin/
+# for Go test binaries). The language-pack lists what to ignore.
