@@ -55,14 +55,23 @@
 
 ## TDD list — MANDATORY, written before any implementation
 
+> **Workflow reminder.** Per `CLAUDE.md` hard rules: this list
+> is filled BEFORE the step branch is created. The first commit
+> on the branch is the failing tests themselves — red, then
+> reviewed with the user, then implementation goes green one
+> test at a time. Per Tidy-First, tidyings live in their own
+> commits separate from the behaviour-changing commits.
+
 <!--
   Ordered checklist of failing tests that must exist before the
   first implementation commit on this branch. Each test is checked
   off when it goes green. The order in this list is the order of
   the implementation commits.
 
-  Format:
-    - [ ] <test-1-description> — *(red → green → refactor)*
+  If you discover during implementation that an additional test
+  is needed, check it in red first (its own commit), then make
+  it green. Do not retro-fit the list to match what was already
+  implemented.
 -->
 - [ ] <test-1-description> — *(red → green → refactor)*
 - [ ] <test-2-description>
@@ -82,15 +91,21 @@ Expected outcome: <one-line-expectation>.
 ## Out of scope for this step
 
 <!-- What is intentionally not part of this step, with a pointer
-     to the later step that will cover it. -->
+     to the later step that will cover it. State things you have
+     considered and explicitly pushed out; this keeps reviewers
+     from second-guessing the scope. -->
+- Error retry / backoff logic — deferred to Step <later-NNN>.
 - <item> — deferred to Step <later-NNN>.
 
 ## Files touched
 
 <!-- Table of files this step creates or modifies. Helps reviewers
      orient quickly and forces the author to think about the
-     blast radius. -->
+     blast radius. Production code and test code in the same
+     row pair (the test row goes first per TDD); commit-time
+     this matches the order of commits on the branch. -->
 | File | Action | Reason |
 |---|---|---|
-| `<path/to/file.ext>` | new | <reason> |
+| `src/<module>/<feature>.rs` | new | implementation of <feature> |
+| `src/<module>/<feature>_test.rs` (or inline `#[cfg(test)]`) | new | TDD tests from the list above |
 | `<path/to/other.ext>` | edit | <reason> |

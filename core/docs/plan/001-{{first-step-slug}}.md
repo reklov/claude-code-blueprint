@@ -40,9 +40,18 @@
 
 ## TDD list — MANDATORY, written before any implementation
 
+> **Workflow reminder.** Per `CLAUDE.md` hard rules: this list is
+> filled BEFORE the step branch is created. The first commit on
+> the branch is the failing tests themselves — red, then reviewed
+> with the user, then implementation goes green one test at a
+> time. Per Tidy-First, tidyings live in their own commits
+> separate from the behaviour-changing commits.
+
 <!--
   Fill this in BEFORE creating the step branch. Each entry is a
   failing test that pins down a piece of the public surface above.
+  If you discover an additional test during implementation,
+  check it in red first (its own commit), then make it green.
 -->
 - [ ] <test-1-description> — *(red → green → refactor)*
 - [ ] <test-2-description>
@@ -57,10 +66,15 @@ Expected outcome: <one-line-expectation>.
 
 ## Out of scope for this step
 
+<!-- State things you have considered and explicitly pushed out;
+     this keeps reviewers from second-guessing the scope. -->
 - <item> — deferred to Step <later-NNN>.
 
 ## Files touched
 
+<!-- Production code and test code in the same row pair (test
+     row first per TDD). -->
 | File | Action | Reason |
 |---|---|---|
-| `<path/to/file.ext>` | new | <reason> |
+| `<path/to/file.ext>` | new | implementation of <feature> |
+| `<path/to/file_test.ext>` (or inline test module) | new | TDD tests from the list above |
