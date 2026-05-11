@@ -106,19 +106,30 @@ says, and what choice the skeleton made.
   `clippy`-on-save as a starting point and marks the section
   TBD. Elaborate when the team converges.
 
-## 10. Bootstrap automation
+## 10. Bootstrap automation — **resolved (v2, 2026-05-11)**
 
-- **Spec (§10 OQ-1):** unresolved — script vs. manual checklist?
-- **`BOOTSTRAP.md`:** manual checklist. Designed so a future
-  script can mechanise the same steps without re-specification.
+- **Spec (§10 OQ-1):** resolved. The bootstrap is Claude-Code-driven
+  via a top-level `CLAUDE.md` in the blueprint repo. Neither a
+  separate script nor a pure markdown checklist — the bootstrap
+  path is the architecture itself.
+- **`core/BOOTSTRAP.md`:** removed. The manual checklist is
+  obsolete; Claude handles the substitution, file renames,
+  language-pack copy, blueprint-only-file deletion, and the
+  first commit.
+- **Failure recovery:** nuke the partial clone and re-clone the
+  blueprint. No idempotent re-runs to maintain.
+- **No manual fallback** — if Claude Code is unavailable, a
+  Claude-Code-driven project makes no sense in the first place.
 
 ## 11. Language-pack location in the component repo
 
-- **Spec (§5):** `docs/_language-pack-{{lang}}.md` in the
-  component repo. The blueprint stores the master pack at
-  `language-packs/{{lang}}.md`.
-- **`BOOTSTRAP.md`:** explicitly walks through the copy from
-  `language-packs/{{lang}}.md` → `docs/_language-pack-{{lang}}.md`.
+- **Spec (§5):** `docs/_language-pack-{{language-pack}}.md` in
+  the component repo. The blueprint stores the master pack at
+  `language-packs/{{language-pack}}.md`.
+- **Bootstrap-CLAUDE.md** (top-level, v2): Claude copies the
+  chosen pack from `language-packs/<pack>.md` to
+  `core/docs/_language-pack-<pack>.md` and then promotes
+  `core/` to the repo root.
 - **Open:** spec §10 OQ-2 (master-vs-component-local pack
   lifecycle) is unresolved. Skeleton treats post-bootstrap pack
   state as component-owned (spec §5 "Wer pflegt die
