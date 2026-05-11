@@ -176,6 +176,91 @@ not just CI.
 The list captures the lived stack; deviate when the component
 genuinely needs something different, not as a stylistic preference.
 
+### Starter `deny.toml`
+
+`cargo-deny` blocks copyleft licenses from sneaking in
+transitively and surfaces unfixed CVEs in the dependency graph.
+The following `deny.toml` is a sensible default — copy it to the
+component repo root and trim or extend the allow-list as needed:
+
+```toml
+# Run via `cargo deny check`. Part of the pre-commit smoke gate.
+
+[graph]
+all-features = false
+
+[output]
+feature-depth = 1
+
+# ---------------------------------------------------------------
+# Licenses — only permissive licenses pass by default. Any GPL,
+# AGPL, or other copyleft license in the transitive graph fails
+# the build. Add an `exceptions` block per crate if you need to
+# allow a specific copyleft dep temporarily.
+# ---------------------------------------------------------------
+[licenses]
+allow = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-3-Clause",
+    "BSD-2-Clause",
+    "ISC",
+    "MPL-2.0",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+    "CC0-1.0",
+    "Zlib",
+    # webpki-roots (Mozilla's root-CA list, pulled in via reqwest's
+    # rustls stack) uses this permissive license.
+    "CDLA-Permissive-2.0",
+]
+# 1.0 = only accept crates whose license file matches a canonical
+# license exactly. Lower values drop the bar; not appropriate for
+# security-sensitive crates.
+confidence-threshold = 0.93
+
+# ---------------------------------------------------------------
+# Advisories (RustSec feed). Unfixed CVEs in a dependency are a
+# ship-stopper, not a follow-up.
+# ---------------------------------------------------------------
+[advisories]
+version = 2
+yanked = "deny"
+# `unmaintained` defaults to "all" → all unmaintained advisories
+# are blocking. Downgrade via the `ignore` list on a case-by-
+# case basis with a one-line reason.
+ignore = [
+    # { id = "RUSTSEC-YYYY-NNNN", reason = "transitive via <dev-dep>; not in shipped binaries" },
+]
+
+# ---------------------------------------------------------------
+# Bans — surface duplicate-version pulls and forbid wildcard
+# version requirements.
+# ---------------------------------------------------------------
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true   # workspace path-deps are wildcards; legitimate
+highlight = "all"
+workspace-default-features = "allow"
+external-default-features = "allow"
+
+# ---------------------------------------------------------------
+# Sources — only the canonical crates.io registry by default.
+# Git-source dependencies trigger a warning so any new pull is
+# investigated before allow-listing.
+# ---------------------------------------------------------------
+[sources]
+unknown-registry = "deny"
+unknown-git = "warn"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
+```
+
+Keep `deny.toml` and `about.toml` (for `cargo about generate`)
+in sync — any drift between the two is a review defect. Both
+sit at the component repo root.
+
 ## Release & versioning
 
 <!-- TBD: this section reflects Rust community defaults; the
