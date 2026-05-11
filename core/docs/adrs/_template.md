@@ -22,6 +22,15 @@
 
 ---
 
+> **Lifecycle reminder.** Status moves only forward:
+> `Proposed` → `Accepted` → either `Superseded by ADR-<NNN>` (with a
+> pointer to the successor ADR) or `Deprecated`. **Accepted ADRs
+> are not edited beyond typo / link repair** — if the decision
+> needs to change, write a new ADR that supersedes this one and
+> flip this one's status. The numbering is immutable; superseded
+> ADRs keep their number forever. See `docs/adrs/README.md` for
+> the full lifecycle.
+
 ## Context
 
 <!-- What is the situation, what is the problem, what constraints
