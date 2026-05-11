@@ -157,6 +157,14 @@ After confirmation:
 8. **Stage and commit:**
    `git add . && git commit -m "chore: bootstrap component from blueprint"`.
 
+The bootstrap commit uses the `chore:` prefix. From here on, the
+component's permanent commit-message convention applies (see
+`CLAUDE.md` §Conventions in the newly-promoted root):
+`feat(step-<NNN>): …` for behaviour changes, `chore(step-<NNN>): …`
+for tidyings and infrastructure, `fix(step-<NNN>): …` for bug
+fixes. Per the Tidy-First hard rule, tidyings live in their own
+commits separate from behaviour changes.
+
 Run the bootstrap verification at the end (the same check the
 spec §7 mandates):
 
