@@ -423,13 +423,14 @@ Findings sind keine Architektur-Entscheidungen. Wenn aus einem Finding eine Ents
 - **`docs/threat-model.md`** — Sicherheits-relevante Annahmen. Trust Boundaries, Assets, Adversary Model, Angriffsflächen, Mitigationen. Auch wenn die Komponente keine kryptographische ist: jedes System hat Trust Boundaries, und sie zu benennen ist wertvoll. Wenn die Komponente trivial ist (z.B. ein reines Validation-Tool), darf die Datei kurz sein und das explizit feststellen.
 - **`docs/api.md`** — Die öffentliche API der Komponente. Bei einer Library: Funktionssignaturen und Verwendungs-Beispiele. Bei einem Service: Endpoints, Request/Response-Schemata, Auth. Bei einem CLI-Tool: Commands, Flags, Exit Codes. Bei einer Komponente mit mehreren Schnittstellen-Typen: Sektionen pro Typ in einer Datei, oder Aufsplitten in `docs/api-library.md`, `docs/api-cli.md`, `docs/api-bindings.md`.
 
-**Optionale Files** (werden angelegt, wenn die Komponente sie braucht — keine im Skeleton):
+**Optionale Files** (werden angelegt, wenn die Komponente sie braucht):
 
 - `docs/operations.md` — Deployment, Monitoring, Runbooks, Incident Response (für Services).
 - `docs/protocol.md` — Protokoll-Spezifikation (für Komponenten, die ein Wire-Protokoll definieren).
 - `docs/migrations.md` — Daten- oder Schema-Migrationen.
 - `docs/external-<system>.md` — Notizen zu fremden Systemen, mit denen die Komponente integriert (z.B. Sodiums `WIRE-API-NOTES.md`).
 - `docs/glossary.md` — Wenn die Komponente in einer Domäne mit eigenem Vokabular operiert.
+- `docs/LEARNINGS.md` — Konsolidierte Retrospektive nach einem abgeschlossenen Implementierungs-Pass oder einer markanten Wegmarke. Format-Schablone: `core/docs/_learnings-template.md` (im Skeleton vorhanden; wird beim Bootstrap ins Komponenten-Repo kopiert, aber nur dann ausgefüllt, wenn die Komponente einen Retrospektiv-Moment erreicht hat).
 
 **Update-Protokoll:**
 - `architecture.md` und `api.md` werden im selben Commit aktualisiert wie Code-Änderungen, die ihre Aussagen verändern (gemäß `documentation freshness`-Hard-Rule).
