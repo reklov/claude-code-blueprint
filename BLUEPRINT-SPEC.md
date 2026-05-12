@@ -729,6 +729,15 @@ Sodium selbst muss sich rückwirkend als Instanz dieses Blueprints lesen lassen.
   - §7 Bootstrap-Fragen-Liste um `LICENSE` (SPDX-Identifier) ergänzt.
   - §6.3: `{{primary}}` / `{{secondary}}` umbenannt zu `{{primary-language-pack}}` / `{{secondary-language-pack}}` (kanonische, eindeutige Namen). §7 nennt die beiden Polyglot-Antworten separat als `PRIMARY-LANGUAGE-PACK` und `SECONDARY-LANGUAGE-PACK[]`.
 - 2026-05-11: Draft v3 — siebte Pflicht-Hard-Rule "Tidyings stay separate from behavioural changes" in §4.1 ergänzt. Quelle: Kent Beck, *Tidy First?*. Slot zwischen "Documentation update happens in the same commit" und "Accepted ADRs are not edited" — passt thematisch (beide Nachbarn betreffen Commit-Struktur bzw. Commit-Lifecycle). Mandatory-Cap bei 10 nicht überschritten (7/10 belegt).
+- 2026-05-12: Draft v4 — Phase-B Defaults aus Sodium-Learnings eingearbeitet (v2.1.0):
+  - §4.4 ADR-Schablone (`core/docs/adrs/_template.md`): Lifecycle-Erinnerungs-Block oberhalb `## Context` ergänzt — Status-Progression und Immutability-Regel am Schreibort sichtbar.
+  - §4.7 optionale Files-Liste um `docs/LEARNINGS.md` erweitert (post-pass-Retrospektive); Schablone `core/docs/_learnings-template.md` im Skeleton angelegt.
+  - `core/docs/threat-model.md`: Severity-Ladder (Critical/High/Medium/Low) als Guidance-Kommentar oberhalb der Assets-Tabelle; Goals/Non-Goals/Assets/Adversary jeweils mit ausgefüllten Beispielzeilen statt nur Pattern-Platzhaltern.
+  - `core/docs/plan/_template.md` und Seed `001-{{first-step-slug}}.md`: TDD-Workflow-Reminder über der TDD-Liste, Out-of-Scope-Beispiel, Files-touched-Beispielzeile mit production+test Row-Pair.
+  - `core/docs/architecture.md`: "When to factor out into docs/external-<system>.md" als HTML-Kommentar in der External-interfaces-Sektion am Schreibort sichtbar.
+  - `language-packs/rust.md`: Starter-`deny.toml` Block; `scripts/` Directory-Konvention.
+  - `language-packs/go.md`: `scripts/` Directory-Konvention.
+  - Top-Level `CLAUDE.md` (Bootstrap-Prompt): Verweis auf `feat(step-<NNN>):` / `chore(step-<NNN>):` / `fix(step-<NNN>):` Commit-Prefix-Konvention direkt nach dem Bootstrap-Commit-Schritt.
 - 2026-05-11: Draft v4 — Bootstrap-Pivot zu Claude-Code-driven Flow:
   - §3 Directory Layout: `BOOTSTRAP.md` aus dem Component-Root-Layout entfernt. Der Bootstrap-Pfad ist jetzt blueprint-intern.
   - §4.10 (BOOTSTRAP.md transient): entfernt. Die ganze Sektion entfällt, weil es im Component-Repo kein BOOTSTRAP.md mehr gibt.
