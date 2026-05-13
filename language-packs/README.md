@@ -24,11 +24,21 @@ the pack incomplete.
 - [`go.md`](go.md) — Go 1.22+ pack. Populated from Go community
   conventions (Effective Go, golangci-lint, goreleaser); will
   be updated in place once a first-party Go component ships.
+- [`kotlin-kmp.md`](kotlin-kmp.md) — Kotlin Multiplatform pack
+  (Kotlin 2.1+, Gradle 8+ with Kotlin DSL). Targets jvm, android,
+  iOS (X64 / Arm64 / SimulatorArm64), macOS (X64 / Arm64),
+  linuxX64. Includes the spec §6.1 platform-variants section
+  (`expect`/`actual` conventions). Populated from JetBrains'
+  KMP documentation and the kotlinx.* ecosystem; will be updated
+  in place once a first-party KMP component ships.
 - [`_template.md`](_template.md) — empty skeleton with all
   required sections. Copy it to start a new pack.
 
-Future packs (TypeScript, Kotlin / Kotlin Multiplatform) start
-from `_template.md`.
+Future packs (TypeScript, classic JVM-only Kotlin) start from
+`_template.md`. KMP and JVM-only Kotlin are deliberately
+separate packs because their build system, source-set layout,
+and dependency ecosystem differ enough that a unified pack
+would be twice as long without being clearer.
 
 ## How packs get into a component
 

@@ -54,8 +54,8 @@ and defaults where useful.
    `Volker Zöpfel` or `Schwarz IT — Platform Squad`.
 4. **`LANGUAGE-PACK`** — pick from the populated packs available
    under `language-packs/` in this repo (check the directory; at
-   the time of this CLAUDE.md `rust` and `go` are populated, plus
-   an empty `_template.md`). For polyglot components per
+   the time of this CLAUDE.md `rust`, `go`, and `kotlin-kmp` are
+   populated, plus an empty `_template.md`). For polyglot components per
    `BLUEPRINT-SPEC.md` §6.3 the user names one primary plus a
    list of secondaries.
 5. **`LICENSE`** — SPDX identifier. Common picks:

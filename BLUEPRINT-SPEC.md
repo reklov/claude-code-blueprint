@@ -729,6 +729,11 @@ Sodium selbst muss sich rückwirkend als Instanz dieses Blueprints lesen lassen.
   - §7 Bootstrap-Fragen-Liste um `LICENSE` (SPDX-Identifier) ergänzt.
   - §6.3: `{{primary}}` / `{{secondary}}` umbenannt zu `{{primary-language-pack}}` / `{{secondary-language-pack}}` (kanonische, eindeutige Namen). §7 nennt die beiden Polyglot-Antworten separat als `PRIMARY-LANGUAGE-PACK` und `SECONDARY-LANGUAGE-PACK[]`.
 - 2026-05-11: Draft v3 — siebte Pflicht-Hard-Rule "Tidyings stay separate from behavioural changes" in §4.1 ergänzt. Quelle: Kent Beck, *Tidy First?*. Slot zwischen "Documentation update happens in the same commit" und "Accepted ADRs are not edited" — passt thematisch (beide Nachbarn betreffen Commit-Struktur bzw. Commit-Lifecycle). Mandatory-Cap bei 10 nicht überschritten (7/10 belegt).
+- 2026-05-12: Draft v4 — Kotlin-Multiplatform-Pack hinzugefügt (v2.2.0):
+  - `language-packs/kotlin-kmp.md` (~390 Zeilen) angelegt. Alle Spec §5 Pflicht-Sektionen plus die §6.1-mandate "Platform variants" Sektion (`expect`/`actual`-Konvention, Native-Glue-Hinweise). Targets: jvm, android, iosX64/iosArm64/iosSimulatorArm64, macosX64/macosArm64, linuxX64. Build-System: Gradle Kotlin DSL. Lint-Stack: ktlint + detekt. Docs: Dokka. Publish: vanniktech-maven-publish.
+  - `language-packs/README.md`: Eintrag für `kotlin-kmp.md` ergänzt; klargestellt, dass KMP und (zukünftiges) JVM-only Kotlin separate Packs sein werden.
+  - Top-Level `CLAUDE.md` (Bootstrap-Prompt): `kotlin-kmp` als populated pack zu den verfügbaren Optionen aufgenommen.
+  - Quelle: JetBrains KMP-Dokumentation, kotlinx.*-Ökosystem, Natrium-Konsumenten-Pattern (Natrium ist KMP-Library, die Sodiums UniFFI-Kotlin-Bindings konsumiert). Kein first-party Schwarz-Digits-KMP-Component liegt vor — Pack wird beim ersten Einsatz nachgeschärft.
 - 2026-05-12: Draft v4 — Phase-B Defaults aus Sodium-Learnings eingearbeitet (v2.1.0):
   - §4.4 ADR-Schablone (`core/docs/adrs/_template.md`): Lifecycle-Erinnerungs-Block oberhalb `## Context` ergänzt — Status-Progression und Immutability-Regel am Schreibort sichtbar.
   - §4.7 optionale Files-Liste um `docs/LEARNINGS.md` erweitert (post-pass-Retrospektive); Schablone `core/docs/_learnings-template.md` im Skeleton angelegt.
